@@ -6,16 +6,17 @@
     <meta charset="utf-8">
 
 
-    <title> Kasambuli's Gallery</title>
+    <title> DI - Gallery</title>
     {% block styles %} {% bootstrap_css %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}"> {% endblock %}
 
 </head>
 
 <body>
-    {% include "navbar.html" %}{% block content %}
+
+    {% block content %}
     <div class="jumbotron" style=" background-color: black;color: bisque;font-style: oblique">
-        <h1 class='text-center'><strong>Welcome to HERS gallery</strong> </h1>
+        <h1 class='text-center'><strong>Welcome to DNYT gallery</strong> </h1>
     </div> {%endblock%} {% block scripts %} {% bootstrap_javascript %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
