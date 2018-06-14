@@ -1,0 +1,37 @@
+{% load bootstrap3 %} {% load static%}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+
+    <title> Kasambuli's Gallery</title>
+    {% block styles %} {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}"> {% endblock %}
+
+</head>
+
+<body>
+    {% include "navbar.html" %}{% block content %}
+    <div class="jumbotron" style=" background-color: black;color: bisque;font-style: oblique">
+        <h1 class='text-center'><strong>Welcome to HERS gallery</strong> </h1>
+    </div> {%endblock%} {% block scripts %} {% bootstrap_javascript %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <script src="{% static 'clipboard.min.js' %}"></script>
+    <script>
+        var clipboard = new ClipboardJS('.btn');
+        clipboard.on('success', function(e) {
+            console.log(e);
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+    </script>
+    {% endblock %}
+</body>
+
+</html>
