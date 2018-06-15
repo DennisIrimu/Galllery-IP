@@ -22,10 +22,12 @@ class Image(models.Model):
         return images
     @classmethod
         def search_by_category(cls,searched_category):
-            images = cls.objects.get(id=id)
+            images = cls.objects.filter(image_location__category__icontains = searched_category)
             return images
 
-        
+    @classmethod
+        def filter_by_location(cls,searched_location):
+            images=cls.objects.filter(image_location__category__icontains = searched_location)
 
 
 class Location(model.Model):
