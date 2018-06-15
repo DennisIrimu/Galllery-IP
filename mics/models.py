@@ -20,6 +20,12 @@ class Image(models.Model):
 
         images = cls.objects.all()
         return images
+    @classmethod
+        def search_by_category(cls,searched_category):
+            images = cls.objects.get(id=id)
+            return images
+
+        
 
 
 class Location(model.Model):
@@ -31,4 +37,11 @@ class Location(model.Model):
     def save_location(self):
         self.save()
 
-    
+class Category(model.Model):
+    category = models.CharField(max_length =30)
+
+    def __str__(self):
+        return self.category
+
+    def save_category(self):
+        self.save()
