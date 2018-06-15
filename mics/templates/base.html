@@ -14,7 +14,7 @@
 
 <body>
 
-    {% block content %}
+    {% include "navbar.html" %}{% block content %}
     <div class="jumbotron" style=" background-color: black;color: bisque;font-style: oblique">
         <h1 class='text-center'><strong>Welcome to DNYT gallery</strong> </h1>
     </div> {%endblock%} {% block scripts %} {% bootstrap_javascript %}
