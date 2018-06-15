@@ -6,8 +6,8 @@ class Image(models.Model):
     image_url = models.TextField(blank = True)
     image_name = models.CharField(max_length = 30)
     image_description = models.TextField()
-    #image_location = models.ForeignKey(Location)
-    #image_category = models.ForeignKey(Category)
+    image_location = models.ForeignKey(Location)
+    image_category = models.ForeignKey(Category)
 
     def __str__(self):
         return self.image_name
@@ -20,3 +20,15 @@ class Image(models.Model):
 
         images = cls.objects.all()
         return images
+
+
+class Location(model.Model):
+    location = models.CharField(max_length =30)
+
+    def __str__(self):
+        return self.Location
+
+    def save_location(self):
+        self.save()
+
+    
