@@ -84,9 +84,9 @@ WSGI_APPLICATION = 'gallery.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DBNAME'),
-        'USER':config('USER'),
-        'PASSWORD':config('DBPASSWORD')
+        'NAME':config('DBNAME'),
+        'USER':config('DBUSER'),
+        'PASSWORD':config('DBPASSWORD'),
     }
 }
 
