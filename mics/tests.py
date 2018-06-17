@@ -30,3 +30,28 @@ class LocationTestClass(TestCase):
 
     def tearDown(self):
         Location.objects.all().delete()
+
+class CategoryTestClass(TestCase):
+
+    # Set up method
+    def setUp(self):
+        self.new_category= Category(category = 'travel')
+        self.location.save()
+
+    def test_instance(self):
+        self.assertTrue(isinstance(self.category, Category))
+
+
+    def update_category(self):
+        self.new_category.save_category()
+        category_id = self.new_category.id
+        Category.update_category(id,"travel")
+        self.assertEqual(self.category.category,"travel")
+
+    def test_delete_category(self):
+        self.category.delete_category()
+        category = Category.objects.all()
+        self.assertTrue(len(category) == 0)
+
+    def tearDown(self):
+        Category.objects.all().delete()
