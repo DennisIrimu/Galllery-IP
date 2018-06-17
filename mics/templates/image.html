@@ -10,8 +10,9 @@
         <h2 class="text-center"><strong>{{ image.image_name }}</strong> </h2>
 
         <p class="text-center"> {{ image.image_description }} </p>
-
+        <p class="text-center"> Category: {{ image.image_category }} </p>
         
+
         <button class="btn" data-clipboard-text="{{image.image_url}}">
                 Copy image url
             </button>

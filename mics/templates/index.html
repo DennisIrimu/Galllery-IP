@@ -15,9 +15,10 @@
                 <img src="{{image.image.url}}" class=" img img-responsive" alt="Image">
                 <div class="mask">
                     <h2 class="text-center"> {{ image.image_name }} </h2>
+                    <p class="text-center"> {{image.image_category}} </h2>
+                    <p class="text-center"> {{image.image_location}} </h2>
 
-
-                  
+                      <a href="{%url 'viewImage' image.id%}">read more</a>
                 </div>
             </div>
 

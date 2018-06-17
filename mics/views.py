@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .models import Image
+from .models import Image,Category
 
 # Create your views here.
 
 def image_list(request):
     images = Image.image_list()
     return render(request, 'index.html',{"images":images})
+
 
 def search_results(request):
 
