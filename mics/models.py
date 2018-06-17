@@ -5,7 +5,7 @@ class Location(models.Model):
     location = models.CharField(max_length =30,blank = True)
 
     def __str__(self):
-        return self.Location
+        return self.location
 
     def save_location(self):
         self.save()
