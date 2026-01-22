@@ -1,38 +1,64 @@
-{% load bootstrap3 %} {% load static%}
+{% load bootstrap3 %}
+{% load static %}
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
-
-
-    <title> DI - Gallery</title>
-    {% block styles %} {% bootstrap_css %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}"> {% endblock %}
-
+    <title>Dollary Social</title>
+    {% block styles %}
+        {% bootstrap_css %}
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% endblock %}
 </head>
-
 <body>
-
-    {% include "navbar.html" %}{% block content %}
-    <div class="jumbotron" style=" background-color: black;color: bisque;font-style: oblique">
-        <h1 class='text-center'><strong>Welcome to DNYT gallery</strong> </h1>
-    </div> {%endblock%} {% block scripts %} {% bootstrap_javascript %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    </head>
-    <script src="{% static 'clipboard.min.js' %}"></script>
-    <script>
-        var clipboard = new ClipboardJS('.btn');
-        clipboard.on('success', function(e) {
-            console.log(e);
-        });
-        clipboard.on('error', function(e) {
-            console.log(e);
-        });
-    </script>
+    {% include "navbar.html" %}
+    <main class="container page-content">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <span>Dollary Social · Share your moments</span>
+        </div>
+    </footer>
+    <footer class="footer">
+        <div class="container">
+            <span>© 2026 Dollary · Share moments, not noise.</span>
+        </div>
+    </footer>
+    {% block scripts %}
+        {% bootstrap_javascript %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="{% static 'clipboard.min.js' %}"></script>
+        <script>
+            var clipboard = new ClipboardJS('.btn-copy');
+            clipboard.on('success', function(e) {
+                console.log(e);
+            });
+            clipboard.on('error', function(e) {
+                console.log(e);
+            });
+        </script>
+        <script>
+            (function() {
+                var key = "dollary-theme";
+                var body = document.body;
+                var toggle = document.querySelector(".theme-toggle");
+                var saved = localStorage.getItem(key);
+                if (saved === "dark") {
+                    body.classList.add("theme-dark");
+                    if (toggle) toggle.textContent = "☀️";
+                }
+                if (toggle) {
+                    toggle.addEventListener("click", function() {
+                        body.classList.toggle("theme-dark");
+                        var isDark = body.classList.contains("theme-dark");
+                        localStorage.setItem(key, isDark ? "dark" : "light");
+                        toggle.textContent = isDark ? "☀️" : "🌙";
+                    });
+                }
+            })();
+        </script>
     {% endblock %}
 </body>
-
 </html>

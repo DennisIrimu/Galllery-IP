@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div class="profile-header">
+            <div class="avatar-pill" style="width:96px;height:96px;">
+                {% if profile_user.profile.avatar %}
+                    <img src="{{ profile_user.profile.avatar.url }}" alt="avatar">
+                {% else %}
+                    {{ profile_user.username|slice:":1"|upper }}
+                {% endif %}
+            </div>
+            <div>
+                <h3 style="margin-top:0;">{{ profile_user.username }}</h3>
+                <p class="card-meta">{{ profile_user.profile.bio }}</p>
+                {% if user == profile_user %}
+                    <a class="btn btn-default btn-sm" href="{% url 'edit_profile' %}">Edit profile</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <strong>{{ images|length }}</strong> posts ·
+        <strong>{{ profile_user.liked_images.count }}</strong> likes
+    </div>
+</div>
+
+<h4>Posts</h4>
+<div class="feed-grid">
+    {% for image in images %}
+        <div class="card">
+            <div class="card-image">
+                <a href="{% url 'viewImage' image.id %}">
+                    <img src="{{ image.image.url }}" alt="{{ image.image_name }}">
+                </a>
+            </div>
+            <div class="card-footer">
+                <p class="card-title">{{ image.image_name }}</p>
+                <p class="card-meta">{{ image.image_category }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <p>No posts yet.</p>
+    {% endfor %}
+</div>
+
+<h4 style="margin-top:24px;">Recently liked</h4>
+<div class="feed-grid">
+    {% for image in liked_images %}
+        <div class="card">
+            <div class="card-image">
+                <a href="{% url 'viewImage' image.id %}">
+                    <img src="{{ image.image.url }}" alt="{{ image.image_name }}">
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <p>No likes yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

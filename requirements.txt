@@ -1,10 +1,9 @@
 dj-database-url==0.5.0
-Django==1.11
+Django==3.2.25
 django-bootstrap3==10.0.1
-django-heroku==0.3.1
 gunicorn==19.8.1
-Pillow==5.1.0
-psycopg2==2.7.4
+Pillow==9.5.0
+psycopg2-binary==2.9.9
 python-decouple==3.1
 pytz==2018.4
-whitenoise==3.3.1
+whitenoise==6.6.0

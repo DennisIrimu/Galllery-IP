@@ -1,8 +1,18 @@
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-# Create your models here.
+
 class Location(models.Model):
-    location = models.CharField(max_length =30,blank = True)
+    location = models.CharField(max_length=30, blank=True)
+    created_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="locations",
+    )
 
     def __str__(self):
         return self.location
@@ -11,16 +21,23 @@ class Location(models.Model):
         self.save()
 
     @classmethod
-    def update_location(cls,id,new_location):
-        cls.objects.filter(id).update(location = new_location)
+    def update_location(cls, id, new_location):
+        cls.objects.filter(id=id).update(location=new_location)
 
     @classmethod
-    def delete_location(cls,id):
-        cls.objects.filter(id).delete()
+    def delete_location(cls, id):
+        cls.objects.filter(id=id).delete()
 
 
 class Category(models.Model):
-    category = models.CharField(max_length =30,blank = True)
+    category = models.CharField(max_length=30, blank=True)
+    created_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="categories",
+    )
 
     def __str__(self):
         return self.category
@@ -29,20 +46,52 @@ class Category(models.Model):
         self.save()
 
     @classmethod
-    def update_category(cls,id,new_category):
-        cls.objects.filter(id).update(category = new_category)
+    def update_category(cls, id, new_category):
+        cls.objects.filter(id=id).update(category=new_category)
 
     @classmethod
-    def delete_category(cls,id):
-        cls.objects.filter(id).delete()
+    def delete_category(cls, id):
+        cls.objects.filter(id=id).delete()
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    created_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="tags",
+    )
+
+    def __str__(self):
+        return self.name
+
 
 class Image(models.Model):
-    image = models.ImageField(upload_to = 'static/img/')
-    image_url = models.TextField(blank = True)
-    image_name = models.CharField(max_length = 30)
-    image_description = models.TextField()
-    image_location = models.ForeignKey(Location,null = True)
-    image_category = models.ForeignKey(Category,null = True)
+    image = models.ImageField(upload_to="static/img/")
+    image_url = models.TextField(blank=True)
+    image_name = models.CharField(max_length=30, blank=True)
+    image_description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    image_location = models.ForeignKey(
+        Location, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    image_category = models.ForeignKey(
+        Category, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    created_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="images",
+    )
+    tags = models.ManyToManyField(Tag, blank=True, related_name="images")
+    likes = models.ManyToManyField(User, blank=True, related_name="liked_images")
+
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.image_name
@@ -52,20 +101,52 @@ class Image(models.Model):
 
     @classmethod
     def image_list(cls):
-
         images = cls.objects.all()
         return images
 
     @classmethod
-    def get_photo_by_id(cls,id):
+    def get_photo_by_id(cls, id):
         images = cls.objects.get(id=id)
         return images
 
     @classmethod
-    def search_by_category(cls,searched_category):
-        images = cls.objects.filter(image_category__category__icontains = searched_category)
+    def search_by_category(cls, searched_category):
+        images = cls.objects.filter(
+            image_category__category__icontains=searched_category
+        )
         return images
 
     @classmethod
-    def filter_by_location(cls,searched_location):
-        images=cls.objects.filter(image_location__category__icontains = searched_location)
+    def filter_by_location(cls, searched_location):
+        images = cls.objects.filter(
+            image_location__location__icontains=searched_location
+        )
+        return images
+
+
+class Comment(models.Model):
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user.username}: {self.text[:30]}"
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+    bio = models.CharField(max_length=160, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)

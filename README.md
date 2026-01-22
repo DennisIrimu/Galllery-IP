@@ -22,6 +22,22 @@ Installation steps
     Install all the necessary requirements by running pip install -r requirements.txt (Python 3).
     $ ./manager.py runserver
 
+Railway deploy (free tier)
+
+1) Create a Railway project from this repo.
+2) Add a PostgreSQL database.
+3) Set environment variables:
+   - SECRET_KEY=your-secret
+   - DEBUG=False
+   - ALLOWED_HOSTS=*.railway.app
+   - CSRF_TRUSTED_ORIGINS=https://*.railway.app
+   - DATABASE_URL=postgres://... (auto-provided by Railway)
+4) Deploy and run:
+   - python manage.py migrate
+
+Note: Uploaded images live in `MEDIA_ROOT`. On Railway, add a volume or
+use an external storage provider if you want uploads to persist.
+
 Prerequisites
 
     Python3.6

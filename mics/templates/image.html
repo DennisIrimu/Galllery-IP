@@ -1,27 +1,92 @@
-{%extends 'base.html'%}{% load static %} {% block content %}
-
-<div class="container">
-
-    <div class="row">
-        <img src="{{image.image.url}}" class="img-responsive" alt="">
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div class="comment">
+            {% if image.created_by %}
+                <a href="{% url 'profile' image.created_by.username %}" class="avatar-pill">
+                    {% if image.created_by.profile.avatar %}
+                        <img src="{{ image.created_by.profile.avatar.url }}" alt="avatar">
+                    {% else %}
+                        {{ image.created_by.username|slice:":1"|upper }}
+                    {% endif %}
+                </a>
+            {% endif %}
+            <div>
+                <p class="card-title">{{ image.image_name }}</p>
+                <p class="card-meta">
+                    {% if image.created_by %}by {{ image.created_by.username }} · {% endif %}
+                    {% if image.image_category %}{{ image.image_category }}{% endif %}
+                    {% if image.image_location %} · {{ image.image_location }}{% endif %}
+                </p>
+            </div>
+        </div>
     </div>
-
-    <div class="row">
-        <h2 class="text-center"><strong>{{ image.image_name }}</strong> </h2>
-
-        <p class="text-center"> {{ image.image_description }} </p>
-        <p class="text-center"> Category: {{ image.image_category }} </p>
-        <p class="text-center"> Location: {{ image.image_location}} </p>
-
-        <button class="btn" data-clipboard-text="{{image.image_url}}">
-                Copy image url
-            </button>
-
-
+    <div class="card-image">
+        <img class="detail-image" src="{{ image.image.url }}" alt="{{ image.image_name }}">
     </div>
-
-
-
+    <div class="card-footer">
+        <p>{{ image.image_description }}</p>
+        <div>
+            {% if image.tags.all %}
+                {% for tag in image.tags.all %}
+                    <span class="tag">#{{ tag.name }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="like-row" style="margin-top: 12px;">
+            <span class="image-meta">{{ image.likes.count }} likes</span>
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'like_image' image.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-like {% if user in image.likes.all %}is-liked{% endif %}" type="submit">
+                        {% if user in image.likes.all %}Unlike{% else %}Like{% endif %}
+                    </button>
+                </form>
+            {% else %}
+                <a class="btn btn-default btn-sm" href="{% url 'login' %}">Login to like</a>
+            {% endif %}
+        </div>
+        <button class="btn btn-default btn-sm btn-copy" data-clipboard-text="{{ image.image_url }}">
+            Copy image url
+        </button>
+    </div>
 </div>
-
+<div class="card">
+    <div class="card-header">
+        <p class="card-title">Comments</p>
+    </div>
+    <div class="card-footer">
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add_comment' image.id %}">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button class="btn btn-primary btn-sm" type="submit">Post</button>
+            </form>
+        {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to comment.</p>
+        {% endif %}
+        <div style="margin-top: 12px;">
+            {% for comment in comments %}
+                <div class="comment">
+                    <a href="{% url 'profile' comment.user.username %}" class="avatar-pill">
+                        {% if comment.user.profile.avatar %}
+                            <img src="{{ comment.user.profile.avatar.url }}" alt="avatar">
+                        {% else %}
+                            {{ comment.user.username|slice:":1"|upper }}
+                        {% endif %}
+                    </a>
+                    <div>
+                        <strong>{{ comment.user.username }}</strong>
+                        <div class="comment-meta">{{ comment.created_at }}</div>
+                        <div>{{ comment.text }}</div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No comments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

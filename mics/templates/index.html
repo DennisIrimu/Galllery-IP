@@ -1,29 +1,86 @@
-{%extends 'base.html'%} {% block content %} {% load bootstrap3 %}{% load static%}{{ block.super}} {% block styles %} {% bootstrap_css %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}"> {% endblock %}
-
-
-<div class="container">
-
-    <!-- Looping through projects   -->
-
-    <div class="row">
-        {% for image in images %}
-
-
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <div class="view view-eighth">
-                <img src="{{image.image.url}}" class=" img img-responsive" alt="Image">
-                <div class="mask">
-                    <h2 class="text-center"> {{ image.image_name }} </h2>
-                    <p class="text-center"> {{image.image_category}} </h2>
-                    <p class="text-center"> {{image.image_location}} </h2>
-
-                      <a href="{%url 'viewImage' image.id%}">read more</a>
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+{% block content %}
+{% if story_users %}
+<section class="story-bar">
+    {% for story_user in story_users %}
+        <div class="story">
+            <div class="story-ring">
+                <div class="story-avatar">
+                    {% if story_user.profile.avatar %}
+                        <img src="{{ story_user.profile.avatar.url }}" alt="avatar">
+                    {% else %}
+                        {{ story_user.username|slice:":1"|upper }}
+                    {% endif %}
                 </div>
             </div>
-
+            <span class="story-name">{{ story_user.username }}</span>
         </div>
-        {% endfor %}
-    </div>
+    {% endfor %}
+</section>
+{% endif %}
+<div class="feed-grid">
+    {% for image in images %}
+        <div class="card">
+            <div class="card-header">
+                <div class="comment">
+                    {% if image.created_by %}
+                        <a href="{% url 'profile' image.created_by.username %}" class="avatar-pill">
+                            {% if image.created_by.profile.avatar %}
+                                <img src="{{ image.created_by.profile.avatar.url }}" alt="avatar">
+                            {% else %}
+                                {{ image.created_by.username|slice:":1"|upper }}
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                    <div>
+                        <p class="card-title">{{ image.image_name }}</p>
+                        <p class="card-meta">
+                            {% if image.created_by %}by {{ image.created_by.username }} · {% endif %}
+                            {% if image.image_category %}{{ image.image_category }}{% endif %}
+                            {% if image.image_location %} · {{ image.image_location }}{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-image">
+                <a href="{% url 'viewImage' image.id %}">
+                    <img src="{{ image.image.url }}" alt="{{ image.image_name }}">
+                </a>
+            </div>
+            <div class="card-footer">
+                <div class="like-row">
+                    <div>
+                        {% if image.tags.all %}
+                            {% for tag in image.tags.all %}
+                                <span class="tag">#{{ tag.name }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span class="image-meta">{{ image.likes.count }} likes · {{ image.comments.count }} comments</span>
+                    </div>
+                </div>
+                <div class="like-row" style="margin-top: 10px;">
+                    <a class="btn btn-default btn-sm" href="{% url 'viewImage' image.id %}">View</a>
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'like_image' image.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button class="btn btn-sm btn-like {% if user in image.likes.all %}is-liked{% endif %}" type="submit">
+                                {% if user in image.likes.all %}Unlike{% else %}Like{% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <a class="btn btn-default btn-sm" href="{% url 'login' %}">Login to like</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}

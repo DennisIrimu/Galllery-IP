@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-card">
+    <h3>Share a new post</h3>
+    <p class="card-meta">Pick a photo, then add category/tags. Location is optional.</p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit">Post</button>
+    </form>
+</div>
+{% endblock %}

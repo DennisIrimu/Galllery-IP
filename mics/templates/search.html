@@ -1,35 +1,28 @@
-{%extends 'base.html'%}{% load static %} {% block content %}
-<div class="container">
-
-    <div class="row">
-        {% if images%}
-        <h2>Found {{ images|length }} of searched term {{message}}</h2>
-        {% else %}
-        <h2> Found 0 articles for the search term {{message}}</h2>
-        {% endif %}
-
-    </div>
-
-    <div class="row">
-
-        {% if images %} {% for image in images %}
-        <div class="col-sm-6 col-md-3">
-            <img src="{{image.image.url}}" class="img-responsive" alt="Image">
-        </div>
-        <div class="row">
-            <h2 class="text-center"><strong>{{ image.image_name }} </strong></h2>
-
-            <p class="text-center"> {{ image.image_description }} </p>
-
-            <!--<p class="text-center"> Category: {{ image.image_category }} </p>
-            <p class="text-center"> Location: {{ image.image_location }} </p>
-
--->
-
-        </div>
-
-
-        {% endfor %} {% endif %}
-    </div>
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+{% block content %}
+<h4>Results for "{{ message }}"</h4>
+<div class="feed-grid">
+    {% if images %}
+        {% for image in images %}
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-title">{{ image.image_name }}</p>
+                    <p class="card-meta">{{ image.image_category }}</p>
+                </div>
+                <div class="card-image">
+                    <a href="{% url 'viewImage' image.id %}">
+                        <img src="{{ image.image.url }}" alt="{{ image.image_name }}">
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
 </div>
 {% endblock %}
